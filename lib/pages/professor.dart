@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 
 import '../models/turma.dart';
+import 'presencaTurma.dart';
 
 class ProfessorPage extends StatelessWidget {
   final String nomeUsuario;
@@ -54,7 +55,11 @@ class ProfessorPage extends StatelessWidget {
                     ],
                   ),
                   onTap: () {
-                    //
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => PresencaTurma(turma: turma),
+                      ),
+                    );
                   },
                 );
               },
