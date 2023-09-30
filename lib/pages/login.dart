@@ -1,3 +1,4 @@
+import 'package:chamadainteligente/pages/professor.dart';
 import 'package:flutter/material.dart';
 
 class LoginPage extends StatelessWidget {
@@ -39,15 +40,13 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
-                  /*
                   String nomeUsuario = nomeUsuarioController.text;
-                  // Navegar para a tela do professor, passando o nome de usuário como parâmetro
+                  // Navegar para a tela do professor, passando o nome de usuário
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => TelaProfessor(nomeUsuario: nomeUsuario),
+                      builder: (context) => ProfessorPage(nomeUsuario: nomeUsuario),
                     ),
                   );
-                  */
                 },
                 child: Text('Entrar'),
               ),
