@@ -1,6 +1,8 @@
 import 'package:chamadainteligente/pages/professor.dart';
 import 'package:flutter/material.dart';
 
+import 'aluno.dart';
+
 class LoginPage extends StatelessWidget {
   final TextEditingController nomeUsuarioController = TextEditingController();
 
@@ -40,13 +42,20 @@ class LoginPage extends StatelessWidget {
               SizedBox(height: 16.0),
               ElevatedButton(
                 onPressed: () {
-                  String nomeUsuario = nomeUsuarioController.text;
-                  // Navegar para a tela do professor, passando o nome de usuário
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => ProfessorPage(nomeUsuario: nomeUsuario),
-                    ),
-                  );
+                  String nomeUsuario = nomeUsuarioController.text.trim().toLowerCase();
+                  if (nomeUsuario.startsWith("aluno")) {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => TelaAluno(),
+                      ),
+                    );
+                  } else {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => ProfessorPage(nomeUsuario: nomeUsuario),
+                      ),
+                    );
+                  }
                 },
                 child: Text('Entrar'),
               ),
