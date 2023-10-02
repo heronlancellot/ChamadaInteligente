@@ -24,16 +24,16 @@ flutter run
 
 ## 4. Telas Iniciais da Aplicação
 ### Login no Sistema
-![imagem](lib\assets\1-login.png)
+![imagem](lib/assets/1-login.png)
 
 ### Turmas ministradas pelo professor
-![imagem](lib\assets\2-turmas-professor.png)
+![imagem](lib/assets/2-turmas-professor.png)
 
 ### Disciplinas do aluno
-![imagem](lib\assets\3-turmas-aluno.png)
+![imagem](lib/assets/3-turmas-aluno.png)
 
 ### Gerenciamento da chamada pelo professor
-![imagem](lib\assets\4-disciplina-professor.png)
+![imagem](lib/assets/4-disciplina-professor.png)
 
 ## Colaboradores
 
