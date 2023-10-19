@@ -1,7 +1,5 @@
-import 'package:chamadainteligente/pages/professor.dart';
 import 'package:flutter/material.dart';
-
-import 'aluno.dart';
+import '../Widgets/loginInputField.dart';
 
 class LoginPage extends StatelessWidget {
   final TextEditingController nomeUsuarioController = TextEditingController();
@@ -10,59 +8,41 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Chamada Inteligente'),
+        title: const Text('Log-In'),
       ),
       body: Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
+            children: [
+              const Text(
                 'Logar no sistema',
                 style: TextStyle(
                   fontSize: 18.0,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              SizedBox(height: 16.0),
-              TextFormField(
-                controller: nomeUsuarioController,
-                decoration: InputDecoration(
-                  labelText: 'Nome de Usuário',
-                ),
-              ),
-              SizedBox(height: 16.0),
-              TextFormField(
-                decoration: InputDecoration(
-                  labelText: 'Senha',
-                ),
-                obscureText: true,
-              ),
-              SizedBox(height: 16.0),
-              ElevatedButton(
-                onPressed: () {
-                  String nomeUsuario = nomeUsuarioController.text.trim().toLowerCase();
-                  if (nomeUsuario.startsWith("aluno")) {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => TelaAluno(),
-                      ),
-                    );
-                  } else {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => ProfessorPage(nomeUsuario: nomeUsuario),
-                      ),
-                    );
-                  }
-                },
-                child: Text('Entrar'),
-              ),
+              const SizedBox(height: 25),
+              loginInputField(),
+              const SizedBox(height: 25),
+              RegisterTxt()
             ],
           ),
         ),
       ),
+    );
+  }
+
+  Widget RegisterTxt() {
+    return const Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Text(
+          "Registrar",
+          style: TextStyle(fontSize: 15.0, color: Colors.blue),
+        ),
+      ],
     );
   }
 }
