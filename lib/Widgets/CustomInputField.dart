@@ -9,7 +9,7 @@ class CustomInputField extends StatelessWidget {
     Key? key,
     required this.label,
     required this.controller,
-    this.isPassword = false,
+    required this.isPassword,
   }) : super(key: key);
 
   @override

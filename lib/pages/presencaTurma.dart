@@ -14,6 +14,7 @@ class PresencaTurma extends StatefulWidget {
 
 class _PresencaTurmaState extends State<PresencaTurma> {
   List<Aluno> alunos = [
+    /*
     Aluno(nome: 'Aluno 1', matricula: '12345', presente: false),
     Aluno(nome: 'Aluno 2', matricula: '67890', presente: true),
     Aluno(nome: 'Aluno 3', matricula: '54321', presente: false),
@@ -34,6 +35,7 @@ class _PresencaTurmaState extends State<PresencaTurma> {
     Aluno(nome: 'Aluno 18', matricula: '50505', presente: true),
     Aluno(nome: 'Aluno 19', matricula: '60606', presente: false),
     Aluno(nome: 'Aluno 20', matricula: '70707', presente: true),
+    */
   ];
 
   @override

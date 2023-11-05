@@ -1,6 +1,11 @@
+import 'package:chamadainteligente/models/aluno.dart';
 import 'package:flutter/material.dart';
 
 class TelaAluno extends StatefulWidget {
+  final Aluno usuario;
+
+  TelaAluno({required this.usuario});
+
   @override
   _TelaAlunoState createState() => _TelaAlunoState();
 }

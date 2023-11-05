@@ -1,10 +1,11 @@
+import 'package:chamadainteligente/models/professor.dart';
 import 'package:flutter/material.dart';
 
 import '../models/turma.dart';
 import 'presencaTurma.dart';
 
 class ProfessorPage extends StatelessWidget {
-  final String nomeUsuario;
+  final Professor usuario;
   final List<Turma> turmas = [
     Turma(
       disciplina: 'Gerência de Projeto',
@@ -18,7 +19,7 @@ class ProfessorPage extends StatelessWidget {
     ),
   ];
 
-  ProfessorPage({required this.nomeUsuario});
+  ProfessorPage({required this.usuario});
 
   @override
   Widget build(BuildContext context) {
@@ -32,7 +33,7 @@ class ProfessorPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Usuário logado: $nomeUsuario',
+              'Usuário logado: ${usuario.email}',
               style: TextStyle(
                 fontSize: 18.0,
                 fontWeight: FontWeight.bold,
