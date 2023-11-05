@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "368112514569",
+    "project_id": "chamada-inteligente",
+    "storage_bucket": "chamada-inteligente.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:368112514569:android:8f65d0c349a148a7f1ead8",
+        "android_client_info": {
+          "package_name": "com.example.chamadainteligente"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAZCoWNmv0uQhjLZt-TeCBvMM5kuflgMh4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
