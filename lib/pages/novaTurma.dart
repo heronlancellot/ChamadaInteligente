@@ -1,6 +1,5 @@
-import 'package:chamadainteligente/models/professor.dart';
+import 'package:chamadainteligente/models/usuario.dart';
 import 'package:flutter/material.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '../models/turma.dart';
@@ -8,7 +7,7 @@ import '../models/turma.dart';
 typedef void TurmaCallback(Turma novaTurma);
 
 class NovaTurmaPage extends StatefulWidget {
-  final Professor user;
+  final Usuario user;
   final TurmaCallback onTurmaAdicionada;
   NovaTurmaPage({required this.user, required this.onTurmaAdicionada});
 

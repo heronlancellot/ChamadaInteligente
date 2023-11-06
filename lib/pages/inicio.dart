@@ -1,21 +1,23 @@
-import 'package:chamadainteligente/models/aluno.dart';
+import 'package:chamadainteligente/pages/presencaTurma.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
+import 'package:firebase_database/firebase_database.dart';
 
 import '../models/turma.dart';
+import '../models/usuario.dart';
 import 'detalhesTurma.dart';
+import 'novaTurma.dart';
 
-class TelaAluno extends StatefulWidget {
-  final Aluno usuario;
+class InicioPage extends StatefulWidget {
+  final Usuario usuario;
 
-  TelaAluno({required this.usuario});
+  InicioPage({required this.usuario});
 
   @override
-  _TelaAlunoState createState() => _TelaAlunoState();
+  _UsuarioPageState createState() => _UsuarioPageState();
 }
 
-class _TelaAlunoState extends State<TelaAluno> {
+class _UsuarioPageState extends State<InicioPage> {
   final DatabaseReference _database = FirebaseDatabase.instance.reference();
   List<Turma> turmas = [];
 
@@ -61,18 +63,44 @@ class _TelaAlunoState extends State<TelaAluno> {
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: (value) {
-              if (value == "Deslogar") {
+              if (value == "AdicionarTurma") {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => NovaTurmaPage(
+                      user: widget.usuario,
+                      onTurmaAdicionada: (novaTurma) {
+                        setState(() {
+                          turmas.add(novaTurma);
+                        });
+                      },
+                    ),
+                  ),
+                );
+              } else if (value == "Deslogar") {
                 FirebaseAuth.instance.signOut();
                 Navigator.of(context).pop();
               }
             },
             itemBuilder: (BuildContext context) {
-              return <PopupMenuEntry<String>>[
-                PopupMenuItem<String>(
-                  value: "Deslogar",
-                  child: Text("Deslogar"),
-                ),
-              ];
+              if (widget.usuario.tipo == "professor") {
+                return <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: "AdicionarTurma",
+                    child: Text("Adicionar turma"),
+                  ),
+                  PopupMenuItem<String>(
+                    value: "Deslogar",
+                    child: Text("Deslogar"),
+                  ),
+                ];
+              } else {
+                return <PopupMenuEntry<String>>[
+                  PopupMenuItem<String>(
+                    value: "Deslogar",
+                    child: Text("Deslogar"),
+                  ),
+                ];
+              }
             },
           ),
         ],
@@ -107,11 +135,19 @@ class _TelaAlunoState extends State<TelaAluno> {
                     ],
                   ),
                   onTap: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => DetalhesTurmaPage(turma: turma),
-                      ),
-                    );
+                    if (widget.usuario.tipo == "professor") {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => PresencaTurma(turma: turma),
+                        ),
+                      );
+                    } else {
+                      Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => DetalhesTurmaPage(turma: turma),
+                        ),
+                      );
+                    }
                   },
                 );
               },

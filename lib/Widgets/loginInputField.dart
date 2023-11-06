@@ -1,13 +1,10 @@
 import 'package:chamadainteligente/Widgets/CustomInputField.dart';
-import 'package:chamadainteligente/models/professor.dart';
-import 'package:chamadainteligente/pages/aluno.dart';
-import 'package:chamadainteligente/pages/professor.dart';
+import 'package:chamadainteligente/models/usuario.dart';
+import 'package:chamadainteligente/pages/inicio.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
-
-import '../models/aluno.dart';
 
 class loginInputField extends StatelessWidget {
   final TextEditingController _emailUsuarioController = TextEditingController();
@@ -53,39 +50,25 @@ class loginInputField extends StatelessWidget {
                   final userData = userDataSnapshot.snapshot.value as Map<dynamic, dynamic>;
 
                   String tipoUsuario = userData["tipo"] ?? "";
-                  if (!tipoUsuario.isEmpty) {
-                    if (tipoUsuario == "professor") {
-
-                      final usuario = Professor(
-                        id: user.uid,
-                        nome: nome,
-                        email: emailUsuario,
-                      );
-
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => ProfessorPage(usuario: usuario),
-                        ),
-                      );
-
-                    } else {
-
-                      final usuario = Aluno(
-                        id: user.uid,
-                        nome: nome,
-                        email: emailUsuario,
-                        matricula: userData["matricula"] ?? "",
-                        presente: false,
-                      );
-
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => TelaAluno(usuario: usuario),
-                        ),
-                      );
-
-                    }
+                  if (tipoUsuario == "professor") {
+                    //
+                  } else {
+                    //
                   }
+
+                  final usuario = Usuario(
+                    id: user.uid,
+                    nome: nome,
+                    email: emailUsuario,
+                    matricula: userData["matricula"] ?? "",
+                    tipo: tipoUsuario,
+                  );
+
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => InicioPage(usuario: usuario),
+                    ),
+                  );
 
                 } else {
                   Fluttertoast.showToast(
