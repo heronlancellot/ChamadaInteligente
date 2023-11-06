@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../Widgets/CustomInputField.dart';
 
@@ -87,6 +88,13 @@ class _CadastroPageState extends State<CadastroPage> {
                           "tipo": tipoSelecionado.toLowerCase(),
                         };
                         await _database.child("users").child(user.uid).set(userData);
+
+                        bool isProfessor = false;
+                        if (tipoSelecionado.toLowerCase() == 'professor') {
+                          isProfessor = true;
+                        }
+                        SharedPreferences prefs = await SharedPreferences.getInstance();
+                        await prefs.setBool('isProfessor', isProfessor);
 
                         // redirecionar para a tela de login
                         Navigator.of(context).pop();

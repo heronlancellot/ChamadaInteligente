@@ -1,8 +1,23 @@
 import 'package:chamadainteligente/pages/cadastro.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../Widgets/loginInputField.dart';
 
 class LoginPage extends StatelessWidget {
+
+  void checkUserAuthentication() async {
+    User? user = FirebaseAuth.instance.currentUser;
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? isProfessor = prefs.getBool('isProfessor');
+    if (user != null) {
+      if (isProfessor == true) {
+        //
+      } else {
+        //
+      }
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +42,6 @@ class LoginPage extends StatelessWidget {
               loginInputField(),
               const SizedBox(height: 25),
               InkWell(
-                // Adicione a lógica de navegação ao pressionar
                 onTap: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(builder: (context) => CadastroPage()),
