@@ -42,7 +42,7 @@ class _PresencaTurmaState extends State<PresencaTurma> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.turma.disciplina),
+        title: Text(widget.turma.titulo),
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
