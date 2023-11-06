@@ -4,6 +4,7 @@ import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 
 import '../models/turma.dart';
+import 'detalhesTurma.dart';
 
 class TelaAluno extends StatefulWidget {
   final Aluno usuario;
@@ -106,7 +107,11 @@ class _TelaAlunoState extends State<TelaAluno> {
                     ],
                   ),
                   onTap: () {
-                    //
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => DetalhesTurmaPage(turma: turma),
+                      ),
+                    );
                   },
                 );
               },
