@@ -1,3 +1,4 @@
+import 'package:chamadainteligente/controller/turmaManager.dart';
 import 'package:chamadainteligente/pages/presencaTurma.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +19,9 @@ class InicioPage extends StatefulWidget {
 }
 
 class _UsuarioPageState extends State<InicioPage> {
+  final TurmaManager _turmaManager = TurmaManager();
   final DatabaseReference _database = FirebaseDatabase.instance.reference();
+
   List<Turma> turmas = [];
 
   @override
@@ -28,31 +31,12 @@ class _UsuarioPageState extends State<InicioPage> {
   }
 
   void _recuperarTurmas() async {
-    final userId = widget.usuario.id;
-    final turmasUsuarioSnapshot = await _database.child("users").child(userId).child("turmas").once();
+    List<Turma> turmasRecuperadas =
+        await _turmaManager.recuperarTurmas(widget.usuario.id);
 
-    if (turmasUsuarioSnapshot.snapshot.value != null) {
-      final turmasIdsMap = turmasUsuarioSnapshot.snapshot.value as Map<String, dynamic>;
-      final turmasIds = turmasIdsMap.keys.toList();
-
-      for (var turmaId in turmasIds) {
-        final turmaSnapshot = await _database.child("turmas").child(turmaId).once();
-
-        if (turmaSnapshot.snapshot.value != null) {
-          final turmaData = turmaSnapshot.snapshot.value as Map<dynamic, dynamic>;
-          final turma = Turma(
-            titulo: turmaData["titulo"] ?? "",
-            nomeProfessor: turmaData["nomeProfessor"] ?? "",
-            codigoDisciplina: turmaData["codigo"] ?? "",
-            curso: turmaData["curso"] ?? "",
-          );
-
-          setState(() {
-            turmas.add(turma);
-          });
-        }
-      }
-    }
+    setState(() {
+      turmas = turmasRecuperadas;
+    });
   }
 
   @override
@@ -105,27 +89,28 @@ class _UsuarioPageState extends State<InicioPage> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Text(
-              'Usuário logado: ${widget.usuario.email}',
-              style: TextStyle(
-                fontSize: 16.0,
-                fontWeight: FontWeight.bold,
+      body: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Usuário logado: ${widget.usuario.email}',
+                style: TextStyle(
+                  fontSize: 16.0,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
             ),
-          ),
-          Expanded(
-            child: ListView.builder(
+            ListView.builder(
+              shrinkWrap: true,
               itemCount: turmas.length,
               itemBuilder: (context, index) {
                 Turma turma = turmas[index];
 
                 return ListTile(
-                  title: Text(turma.titulo),
+                  title: Text(turma.id),
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
@@ -152,8 +137,8 @@ class _UsuarioPageState extends State<InicioPage> {
                 );
               },
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }

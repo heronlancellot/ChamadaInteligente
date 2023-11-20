@@ -5,7 +5,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../Widgets/loginInputField.dart';
 
 class LoginPage extends StatelessWidget {
-
   void checkUserAuthentication() async {
     User? user = FirebaseAuth.instance.currentUser;
     SharedPreferences prefs = await SharedPreferences.getInstance();

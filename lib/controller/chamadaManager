@@ -1,0 +1,16 @@
+class ChamadaManager {
+  final DatabaseReference _database = FirebaseDatabase.instance.reference();
+
+  Future<void> criarChamada(String turmaId) async {
+    DatabaseReference chamadaRef =
+        _database.child("turmas").child(turmaId).child("chamadas");
+    String novaChamadaKey = chamadaRef.push().key ?? '';
+
+    // Cria um novo nó para a chamada
+    await chamadaRef.child(novaChamadaKey).set({
+      "titulo": "Título da Chamada",
+      "aberta": true,
+      // Adicione outros campos conforme necessário
+    });
+  }
+}

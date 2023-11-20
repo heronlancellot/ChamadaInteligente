@@ -39,11 +39,15 @@ class _NovaTurmaPageState extends State<NovaTurmaPage> {
       await newTurmaRef.set(novaTurmaData);
 
       // salvar a nova turma no nó "turmas" do usuário professor
-      final userTurmasRef = _database.child("users").child(widget.user.id).child("turmas").child(codigo);
+      final userTurmasRef = _database
+          .child("users")
+          .child(widget.user.id)
+          .child("turmas")
+          .child(codigo);
       await userTurmasRef.set(titulo);
 
       widget.onTurmaAdicionada(Turma(
-        titulo: titulo,
+        id: titulo,
         codigoDisciplina: codigo,
         curso: curso,
         nomeProfessor: widget.user.nome ?? "",
