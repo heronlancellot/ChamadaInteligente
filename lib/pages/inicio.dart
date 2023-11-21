@@ -1,12 +1,13 @@
 import 'package:chamadainteligente/controller/turmaManager.dart';
-import 'package:chamadainteligente/pages/presencaTurma.dart';
+import 'package:chamadainteligente/controller/userManager.dart';
+import 'package:chamadainteligente/pages/professorPage.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
 
 import '../models/turma.dart';
 import '../models/usuario.dart';
-import 'detalhesTurma.dart';
+import 'studentPage.dart';
 import 'novaTurma.dart';
 
 class InicioPage extends StatefulWidget {
@@ -15,24 +16,27 @@ class InicioPage extends StatefulWidget {
   InicioPage({required this.usuario});
 
   @override
-  _UsuarioPageState createState() => _UsuarioPageState();
+  _InicioPageState createState() => _InicioPageState();
 }
 
-class _UsuarioPageState extends State<InicioPage> {
+class _InicioPageState extends State<InicioPage> {
   final TurmaManager _turmaManager = TurmaManager();
   final DatabaseReference _database = FirebaseDatabase.instance.reference();
 
   List<Turma> turmas = [];
+  late UsuarioManager _usuarioManager;
 
   @override
   void initState() {
     super.initState();
+    _usuarioManager = UsuarioManager();
+    _usuarioManager.setUsuario(widget.usuario);
     _recuperarTurmas();
   }
 
   void _recuperarTurmas() async {
     List<Turma> turmasRecuperadas =
-        await _turmaManager.recuperarTurmas(widget.usuario.id);
+        await _turmaManager.recuperarTurmas(_usuarioManager.usuario.id);
 
     setState(() {
       turmas = turmasRecuperadas;
@@ -51,7 +55,7 @@ class _UsuarioPageState extends State<InicioPage> {
                 Navigator.of(context).push(
                   MaterialPageRoute(
                     builder: (context) => NovaTurmaPage(
-                      user: widget.usuario,
+                      user: _usuarioManager.usuario,
                       onTurmaAdicionada: (novaTurma) {
                         setState(() {
                           turmas.add(novaTurma);
@@ -66,7 +70,7 @@ class _UsuarioPageState extends State<InicioPage> {
               }
             },
             itemBuilder: (BuildContext context) {
-              if (widget.usuario.tipo == "professor") {
+              if (_usuarioManager.usuario.tipo == "professor") {
                 return <PopupMenuEntry<String>>[
                   PopupMenuItem<String>(
                     value: "AdicionarTurma",
@@ -96,7 +100,7 @@ class _UsuarioPageState extends State<InicioPage> {
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: Text(
-                'Usuário logado: ${widget.usuario.email}',
+                'Usuário logado: ${_usuarioManager.usuario.email}',
                 style: TextStyle(
                   fontSize: 16.0,
                   fontWeight: FontWeight.bold,
@@ -120,16 +124,16 @@ class _UsuarioPageState extends State<InicioPage> {
                     ],
                   ),
                   onTap: () {
-                    if (widget.usuario.tipo == "professor") {
+                    if (_usuarioManager.usuario.tipo == "professor") {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => PresencaTurma(turma: turma),
+                          builder: (context) => ProfessorPage(turma: turma),
                         ),
                       );
                     } else {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => DetalhesTurmaPage(turma: turma),
+                          builder: (context) => StudentPage(turma: turma),
                         ),
                       );
                     }

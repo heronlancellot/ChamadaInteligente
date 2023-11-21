@@ -11,7 +11,7 @@ class ClassDetails extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.center,
       children: [
         const SizedBox(height: 600),
-        presenceButton(),
+        // presenceButton(),
         classDetails(),
       ],
     );
