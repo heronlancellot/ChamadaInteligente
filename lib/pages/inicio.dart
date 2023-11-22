@@ -62,6 +62,7 @@ class _UsuarioPageState extends State<InicioPage> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Turmas'),
+        automaticallyImplyLeading: false,
         actions: <Widget>[
           PopupMenuButton<String>(
             onSelected: (value) {
