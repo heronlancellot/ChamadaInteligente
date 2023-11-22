@@ -32,7 +32,7 @@ class _UsuarioPageState extends State<InicioPage> {
     final turmasUsuarioSnapshot = await _database.child("users").child(userId).child("turmas").once();
 
     if (turmasUsuarioSnapshot.snapshot.value != null) {
-      final turmasIdsMap = turmasUsuarioSnapshot.snapshot.value as Map<String, dynamic>;
+      final turmasIdsMap = turmasUsuarioSnapshot.snapshot.value as Map<dynamic, dynamic>;
       final turmasIds = turmasIdsMap.keys.toList();
 
       for (var turmaId in turmasIds) {
@@ -111,7 +111,7 @@ class _UsuarioPageState extends State<InicioPage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Usuário logado: ${widget.usuario.email}',
+              'Usuário: ${widget.usuario.email}',
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,
@@ -129,7 +129,8 @@ class _UsuarioPageState extends State<InicioPage> {
                   subtitle: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text("Professor: ${turma.nomeProfessor}"),
+                      if (widget.usuario.tipo == "aluno")
+                        Text("Professor: ${turma.nomeProfessor}"),
                       Text("Código Disciplina: ${turma.codigoDisciplina}"),
                       Text("Curso: ${turma.curso}"),
                     ],
@@ -144,7 +145,7 @@ class _UsuarioPageState extends State<InicioPage> {
                     } else {
                       Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => DetalhesTurmaPage(turma: turma),
+                          builder: (context) => DetalhesTurmaPage(turma: turma, usuario: widget.usuario),
                         ),
                       );
                     }
