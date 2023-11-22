@@ -5,6 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class loginInputField extends StatelessWidget {
   final TextEditingController _emailUsuarioController = TextEditingController();
@@ -41,7 +42,7 @@ class loginInputField extends StatelessWidget {
 
             if (userCredential.user != null) {
               final user = userCredential.user!;
-              if (user.emailVerified || 1 == 1) { // não exigir confirmação por enquanto
+              if (user.emailVerified) {
                 String nome = user.displayName ?? "";
 
                 final userDataSnapshot = await _database.child("users").child(user.uid).once();
@@ -51,9 +52,9 @@ class loginInputField extends StatelessWidget {
 
                   String tipoUsuario = userData["tipo"] ?? "";
                   if (tipoUsuario == "professor") {
-                    //
+                    salvarPreferenciaTipoUsuario("professor");
                   } else {
-                    //
+                    salvarPreferenciaTipoUsuario("aluno");
                   }
 
                   final usuario = Usuario(
@@ -120,4 +121,10 @@ class loginInputField extends StatelessWidget {
       child: Text('Entrar'),
     );
   }
+
+  Future<void> salvarPreferenciaTipoUsuario(String tipoUsuario) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('tipoUsuario', tipoUsuario);
+  }
+
 }

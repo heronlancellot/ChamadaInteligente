@@ -2,10 +2,12 @@ import 'package:chamadainteligente/pages/presencaTurma.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/turma.dart';
 import '../models/usuario.dart';
 import 'detalhesTurma.dart';
+import 'login.dart';
 import 'novaTurma.dart';
 
 class InicioPage extends StatefulWidget {
@@ -77,8 +79,11 @@ class _UsuarioPageState extends State<InicioPage> {
                   ),
                 );
               } else if (value == "Deslogar") {
+                salvarPreferenciaTipoUsuario("");
                 FirebaseAuth.instance.signOut();
-                Navigator.of(context).pop();
+                Navigator.of(context).pushReplacement(
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
               }
             },
             itemBuilder: (BuildContext context) {
@@ -119,7 +124,14 @@ class _UsuarioPageState extends State<InicioPage> {
             ),
           ),
           Expanded(
-            child: ListView.builder(
+            child: turmas.isEmpty
+                ? Center(
+              child: Text(
+                'Nenhuma disciplina registrada',
+                style: TextStyle(fontSize: 16.0),
+              ),
+            )
+                : ListView.builder(
               itemCount: turmas.length,
               itemBuilder: (context, index) {
                 Turma turma = turmas[index];
@@ -158,4 +170,10 @@ class _UsuarioPageState extends State<InicioPage> {
       ),
     );
   }
+
+  Future<void> salvarPreferenciaTipoUsuario(String tipoUsuario) async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    await prefs.setString('tipoUsuario', tipoUsuario);
+  }
+
 }

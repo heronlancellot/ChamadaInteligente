@@ -3,24 +3,38 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../Widgets/loginInputField.dart';
+import '../models/usuario.dart';
+import 'inicio.dart';
 
 class LoginPage extends StatelessWidget {
 
-  void checkUserAuthentication() async {
+  void checkUserAuthentication(BuildContext context) async {
     User? user = FirebaseAuth.instance.currentUser;
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    bool? isProfessor = prefs.getBool('isProfessor');
-    if (user != null) {
-      if (isProfessor == true) {
-        //
-      } else {
-        //
+    String? tipoUsuario = prefs.getString('tipoUsuario');
+    if (tipoUsuario != null) {
+      if (!tipoUsuario.isEmpty) {
+        if (user != null) {
+          final usuario = Usuario(
+            id: user.uid,
+            nome: user.displayName ?? "",
+            email: user.email ?? "",
+            matricula: "",
+            tipo: tipoUsuario,
+          );
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => InicioPage(usuario: usuario),
+            ),
+          );
+        }
       }
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    checkUserAuthentication(context);
     return Scaffold(
       appBar: AppBar(
         title: const Text('Log-In'),
