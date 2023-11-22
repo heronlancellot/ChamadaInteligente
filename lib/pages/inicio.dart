@@ -117,7 +117,7 @@ class _UsuarioPageState extends State<InicioPage> {
           Padding(
             padding: const EdgeInsets.all(16.0),
             child: Text(
-              'Usuário: ${widget.usuario.email}',
+              '${widget.usuario.tipo == 'aluno' ? 'Aluno' : 'Professor'}: ${widget.usuario.email}',
               style: TextStyle(
                 fontSize: 16.0,
                 fontWeight: FontWeight.bold,

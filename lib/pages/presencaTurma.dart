@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:permission_handler/permission_handler.dart';
 import '../models/turma.dart';
+import 'alunosDisciplina.dart';
 import 'alunosPresentes.dart';
 
 class PresencaTurma extends StatefulWidget {
@@ -155,7 +156,6 @@ class _PresencaTurmaState extends State<PresencaTurma> {
         .once();
 
     if (detalhesAlunoSnapshot.snapshot.value != null) {
-
       Map<dynamic, dynamic> detalhesAlunoMap = detalhesAlunoSnapshot.snapshot.value as Map<dynamic, dynamic>;
       String nome = detalhesAlunoMap['nome']?.toString() ?? '';
       String matricula = detalhesAlunoMap['matricula']?.toString() ?? '';
@@ -188,9 +188,7 @@ class _PresencaTurmaState extends State<PresencaTurma> {
           );
         },
       );
-
     }
-
   }
 
   Future<void> exibirHistorico(BuildContext context) async {
@@ -260,10 +258,23 @@ class _PresencaTurmaState extends State<PresencaTurma> {
             onSelected: (String choice) {
               if (choice == 'historico') {
                 exibirHistorico(context);
+              } else if (choice == 'alunos') {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ListaAlunosDisciplina(
+                      turma: widget.turma,
+                    ),
+                  ),
+                );
               }
             },
             itemBuilder: (BuildContext context) {
               return [
+                PopupMenuItem<String>(
+                  value: 'alunos',
+                  child: Text('Alunos'),
+                ),
                 PopupMenuItem<String>(
                   value: 'historico',
                   child: Text('Histórico de frequência'),
