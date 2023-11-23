@@ -2,6 +2,7 @@ import 'package:chamadainteligente/pages/presencaTurma.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_database/firebase_database.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../models/turma.dart';
@@ -26,7 +27,17 @@ class _UsuarioPageState extends State<InicioPage> {
   @override
   void initState() {
     super.initState();
+    obterLocalizacao();
     _recuperarTurmas();
+  }
+
+  Future<void> obterLocalizacao() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      print('Permissão concedida para acessar a localização.');
+    } else {
+      print('Permissão negada para acessar a localização.');
+    }
   }
 
   void _recuperarTurmas() async {

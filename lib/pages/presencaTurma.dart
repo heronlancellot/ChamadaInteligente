@@ -28,7 +28,6 @@ class _PresencaTurmaState extends State<PresencaTurma> {
   }
 
   Future<void> verificarChamada() async {
-    obterLocalizacao();
 
     String dataAtual = DateTime.now().toString();
     String dataAteDia = dataAtual.split(' ')[0];
@@ -81,46 +80,76 @@ class _PresencaTurmaState extends State<PresencaTurma> {
     }
   }
 
-  Future<void> obterLocalizacao() async {
-    var status = await Permission.location.request();
-    if (status.isGranted) {
-      print('Permissão concedida para acessar a localização.');
-    } else {
-      print('Permissão negada para acessar a localização.');
+  Future<void> iniciarChamada() async {
+
+    var status = await Permission.location.status;
+    if (status.isDenied) {
+      mostrarAlertaPermissao();
+    } else if (status.isGranted) {
+
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      String coordenadasLocalizacao = "${position.latitude}° N, ${position.longitude}° W";
+
+      String dataAtual = DateTime.now().toString();
+      String dataAteDia = dataAtual.split(' ')[0];
+
+      await FirebaseDatabase.instance
+          .reference()
+          .child("presencas")
+          .child(widget.turma.codigoDisciplina)
+          .child(dataAteDia)
+          .remove();
+
+      await FirebaseDatabase.instance
+          .reference()
+          .child("chamadas")
+          .child(widget.turma.codigoDisciplina)
+          .set({
+        "titulo": widget.turma.titulo,
+        "dataAtual": dataAtual,
+        "coordenadas": coordenadasLocalizacao,
+      });
+
+      setState(() {
+        chamadaAtiva = true;
+        chamadaEncerrada = false;
+        alunos = [];
+      });
+
     }
+
   }
 
-  Future<void> iniciarChamada() async {
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+  Future<void> mostrarAlertaPermissao() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Permissão de localização necessária'),
+          content: Text('Por favor, conceda permissão de localização para continuar.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                solicitarPermissao();
+              },
+            ),
+          ],
+        );
+      },
     );
-    String coordenadasLocalizacao = "${position.latitude}° N, ${position.longitude}° W";
+  }
 
-    String dataAtual = DateTime.now().toString();
-    String dataAteDia = dataAtual.split(' ')[0];
-
-    await FirebaseDatabase.instance
-        .reference()
-        .child("presencas")
-        .child(widget.turma.codigoDisciplina)
-        .child(dataAteDia)
-        .remove();
-
-    await FirebaseDatabase.instance
-        .reference()
-        .child("chamadas")
-        .child(widget.turma.codigoDisciplina)
-        .set({
-      "titulo": widget.turma.titulo,
-      "dataAtual": dataAtual,
-      "coordenadas": coordenadasLocalizacao,
-    });
-
-    setState(() {
-      chamadaAtiva = true;
-      chamadaEncerrada = false;
-      alunos = [];
-    });
+  Future<void> solicitarPermissao() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      print('Permissão de localização concedida');
+    } else {
+      print('Permissão de localização negada');
+    }
   }
 
   Future<void> encerrarChamada() async {

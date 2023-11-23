@@ -1,6 +1,7 @@
 import 'package:firebase_database/firebase_database.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:permission_handler/permission_handler.dart';
 import '../models/turma.dart';
 import '../models/chamada.dart';
 import '../models/usuario.dart';
@@ -81,64 +82,99 @@ class _DetalhesTurmaPageState extends State<DetalhesTurmaPage> {
   }
 
   Future<void> verificarPresenca(Chamada chamada) async {
-    Position position = await Geolocator.getCurrentPosition(
-      desiredAccuracy: LocationAccuracy.high,
+    var status = await Permission.location.status;
+    if (status.isDenied) {
+      mostrarAlertaPermissao();
+    } else if (status.isGranted) {
+      Position position = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.high,
+      );
+      String coordenadasAtual = "${position.latitude}° N, ${position.longitude}° W";
+      double maxDistanceMeters = 0.00045;
+      bool areClose = areCoordinatesClose(coordenadasAtual, chamada.coordenadas, maxDistanceMeters);
+
+      if (areClose) {
+        String data = chamada.data.split(' ')[0];
+        await FirebaseDatabase.instance
+            .reference()
+            .child("presencas")
+            .child(widget.turma.codigoDisciplina)
+            .child(data)
+            .child("alunos")
+            .child(widget.usuario.id)
+            .set({
+          "nome": widget.usuario.nome,
+        });
+
+        setState(() {
+          presencaRegistrada = true;
+        });
+
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Presença registrada!'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Ok'),
+                ),
+              ],
+            );
+          },
+        );
+      } else {
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Você não está próximo à sala de aula'),
+              content: Text('Para marcar presença, você deve estar próximo à sala de aula.'),
+              actions: [
+                TextButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: Text('Ok'),
+                ),
+              ],
+            );
+          },
+        );
+      }
+    }
+  }
+
+  Future<void> mostrarAlertaPermissao() async {
+    return showDialog<void>(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Permissão de localização necessária'),
+          content: Text('Por favor, conceda permissão de localização para continuar.'),
+          actions: <Widget>[
+            TextButton(
+              child: Text('Ok'),
+              onPressed: () {
+                Navigator.of(context).pop();
+                solicitarPermissao();
+              },
+            ),
+          ],
+        );
+      },
     );
-    String coordenadasAtual = "${position.latitude}° N, ${position.longitude}° W";
-    double maxDistanceMeters = 0.00045;
-    bool areClose = areCoordinatesClose(coordenadasAtual, chamada.coordenadas, maxDistanceMeters);
+  }
 
-    if (areClose) {
-      String data = chamada.data.split(' ')[0];
-      await FirebaseDatabase.instance
-          .reference()
-          .child("presencas")
-          .child(widget.turma.codigoDisciplina)
-          .child(data)
-          .child("alunos")
-          .child(widget.usuario.id)
-          .set({
-        "nome": widget.usuario.nome,
-      });
-
-      setState(() {
-        presencaRegistrada = true;
-      });
-
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Presença registrada!'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Ok'),
-              ),
-            ],
-          );
-        },
-      );
+  Future<void> solicitarPermissao() async {
+    var status = await Permission.location.request();
+    if (status.isGranted) {
+      print('Permissão de localização concedida');
     } else {
-      showDialog(
-        context: context,
-        builder: (BuildContext context) {
-          return AlertDialog(
-            title: Text('Você não está próximo à sala de aula'),
-            content: Text('Para marcar presença, você deve estar próximo à sala de aula.'),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: Text('Ok'),
-              ),
-            ],
-          );
-        },
-      );
+      print('Permissão de localização negada');
     }
   }
 
