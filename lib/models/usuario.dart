@@ -1,13 +1,15 @@
-class Aluno {
+class Usuario {
   final String id;
   final String nome;
   final String email;
   final String matricula;
+  final String tipo;
 
-  Aluno({
+  Usuario({
     required this.id,
     required this.nome,
     required this.email,
     required this.matricula,
+    required this.tipo,
   });
 }
